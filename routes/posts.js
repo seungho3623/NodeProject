@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+/* 게시글 page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: '홈페이지' });
+  res.render('posts', { title: '게시글' });
 });
 
 module.exports = router;
