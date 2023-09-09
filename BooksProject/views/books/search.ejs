@@ -4,14 +4,13 @@
 <div class="row my-5">
     <div class="col">
         <div class="row justify-content-end">
-            <form class="col-6 col-lg-3 col-md-4" name="frm">
+            <form class="col-6 col-lg-3 col-md-4 mb-5" name="frm">
                 <div class="input-group">
                     <input class="form-control" placeholder="검색어" name="query" value="웹서버">
                     <button class="btn btn-primary">검색</button>
                 </div>
             </form>
         </div>
-        <hr>
         <div id="div_books"></div>
         <div class="text-center" id="div_page">
             <button class="btn btn-primary" id="prev">이전</button>
@@ -20,8 +19,8 @@
         </div>
     </div>
 </div>
-<script type="x-handlebars-templte" id="temp_books">
-    <table class="table">
+<script type="x-handlebars-template" id="temp_books">
+    <table class="table table-striped">
         {{#each documents}}
         <tr>
             <td><img src="{{thumbnail thumbnail}}" index="{{@index}}" width="50"></td>
@@ -63,27 +62,27 @@
             $(frm.query).focus();
         }else{
             page=1;
-            getList();
+            getBooks();
         }
     });
 
     $("#next").on("click", function(){
         page++;
-        getList();    
+        getBooks();    
     });
 
     $("#prev").on("click", function(){
         page--;
-        getList();
+        getBooks();
     });
 
-    getList();
-    function getList() {
+    getBooks();
+    function getBooks() {
         $.ajax({
-            type:'get',
+            type:'GET',
             url:'https://dapi.kakao.com/v3/search/book?target=title',
             headers:{Authorization:"KakaoAK 65b4c0591600fd46e7194fae2ec7f2e6"},
-            data:{ query:query, page:page, size:5 },
+            data:{ query:query, page:page, size:10 },
             dataType:'json',
             success:function(data){
                 console.log(data);
@@ -100,7 +99,7 @@
                 }else {
                     $("#next").attr("disabled", false);
                 }
-                let last=Math.ceil(data.meta.pageable_count/5);
+                let last=Math.ceil(data.meta.pageable_count/10);
                 if(data.meta.pageable_count>0){
                     $("#div_page").show();
                     $("#span_page").html(page + "/" + last);
