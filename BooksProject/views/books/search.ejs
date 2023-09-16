@@ -5,13 +5,14 @@
     <div class="col">
         <h1 class="text-center mb-5">도서검색</h1>
         <div class="row justify-content-end">
-            <form class="col-6 col-lg-3 col-md-4 mb-5" name="frm">
+            <form class="col-6 col-lg-3 col-md-4 mb-3" name="frm">
                 <div class="input-group">
                     <input class="form-control" placeholder="검색어" name="query" value="웹서버">
                     <button class="btn btn-primary">검색</button>
                 </div>
             </form>
         </div>
+        
         <div id="div_books"></div>
         <div class="text-center" id="div_page">
             <button class="btn btn-primary" id="prev">이전</button>
@@ -24,9 +25,9 @@
     <table class="table table-striped">
         {{#each documents}}
         <tr>
-            <td><img src="{{thumbnail thumbnail}}" index="{{@index}}" width="50"></td>
+            <td><img src="{{emptyCheck thumbnail}}" index="{{@index}}" width="50"></td>
             <td>{{title}}</td>
-            <td>{{price price}}</td>
+            <td>{{format price}}</td>
             <td>{{authors}}</td>
         </tr>
         <%-include("modal.ejs")%>    
@@ -34,16 +35,12 @@
     </table>
 </script>
 <script>
-    Handlebars.registerHelper("thumbnail", function(thumbnail){
-        if(!thumbnail) {
-            return "http://via.placeholder.com/120x150";
-        }else {
-            return thumbnail;
-        }
+    Handlebars.registerHelper("emptyCheck", function(thumbnail){
+        return (thumbnail) ? thumbnail : "http://via.placeholder.com/120x170";
     });
 
-    Handlebars.registerHelper("price", function(price){
-        if(price) return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    Handlebars.registerHelper("format", function(price){
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
     });
 </script>
 <script>
@@ -83,7 +80,7 @@
             type:'GET',
             url:'https://dapi.kakao.com/v3/search/book?target=title',
             headers:{Authorization:"KakaoAK 65b4c0591600fd46e7194fae2ec7f2e6"},
-            data:{ query:query, page:page, size:5 },
+            data:{ query:query, page:page, size:6 },
             dataType:'json',
             success:function(data){
                 console.log(data);
