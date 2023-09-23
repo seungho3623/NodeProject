@@ -8,16 +8,16 @@
             <form class="col-6 col-lg-3 col-md-4 mb-3" name="frm">
                 <div class="input-group">
                     <input class="form-control" placeholder="검색어" name="query" value="웹서버">
-                    <button class="btn btn-primary">검색</button>
+                    <button class="btn btn-dark">검색</button>
                 </div>
             </form>
         </div>
         
         <div id="div_books"></div>
         <div class="text-center" id="div_page">
-            <button class="btn btn-primary" id="prev">이전</button>
+            <button class="btn btn-dark" id="prev">이전</button>
             <span class="mx-3" id="span_page">1/10</span>
-            <button class="btn btn-primary" id="next">다음</button>
+            <button class="btn btn-dark" id="next">다음</button>
         </div>
     </div>
 </div>
@@ -29,6 +29,7 @@
             <td>{{title}}</td>
             <td>{{format price}}</td>
             <td>{{authors}}</td>
+            <td><button class="btn btn-dark" id="book-info" index="{{@index}}">도서정보</button></td>
         </tr>
         <%-include("modal.ejs")%>    
         {{/each}}
@@ -44,10 +45,20 @@
     });
 </script>
 <script>
+    //id : #
+    //class : .
+    //tag : ""
+    //name : ""(X)
+    
     let query=$(frm.query).val();
     let page=1;
 
     $("#div_books").on("click", "img", function(){
+        let index=$(this).attr("index")
+        $("#modal" + index).modal("show");
+    });
+
+    $("#div_books").on("click", "#book-info", function(){
         let index=$(this).attr("index")
         $("#modal" + index).modal("show");
     });
@@ -87,17 +98,11 @@
                 temp=Handlebars.compile($("#temp_books").html());
                 $("#div_books").html(temp(data));
                 $("#span_page").html(page);
-                if(page==1) {
-                    $("#prev").attr("disabled", true)
-                }else {
-                    $("#prev").attr("disabled", false);
-                }
-                if(data.meta.is_end) {
-                    $("#next").attr("disabled", true)
-                }else {
-                    $("#next").attr("disabled", false);
-                }
-                let last=Math.ceil(data.meta.pageable_count/10);
+
+                (page == 1) ? $("#prev").attr("disabled", true) : $("#prev").attr("disabled", false);
+                (data.meta.is_end) ? $("#next").attr("disabled", true) : $("#next").attr("disabled", false);
+                
+                let last=Math.ceil(data.meta.pageable_count/6);
                 if(data.meta.pageable_count>0){
                     $("#div_page").show();
                     $("#span_page").html(page + "/" + last);
