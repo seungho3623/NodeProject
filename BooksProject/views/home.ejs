@@ -37,14 +37,14 @@
         <div class="col-6 col-md-4 col-lg-2 mb-3">
             <div class="card">
                 <div class="card-body">
-                    <img src="{{emptyCheck thumbnail}}" width="90%" style="margin:0 auto; display:block;">
+                    <img src="{{emptyCheck thumbnail}}" width="90%" style="margin:0 auto; display:block;" index="{{@index}}">
                     <div class="ellipsis pt-3" style="font-size:0.8rem">
                         {{title}}
                     </div>
                 </div>
                 <div class="card-footer" style="font-size:0.8rem">
                     {{format price}}
-                    <i class="bi bi-cart-check float-end" book="{{book @this}}"></i>
+                    <i class="cart bi bi-cart-check float-end" book="{{book @this}}"></i>
                 </div>
             </div>
         </div>
@@ -65,22 +65,39 @@
     });
 </script>
 
-<script>
+<script type="module">
+    import { app } from "/javascripts/firebaseInit.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+    const db = getDatabase(app);
+    
     let query=$(frm.query).val();
     let page = 1;
 
     getBooks();
 
-    //장바구니
-    $("#div_books").on("click", ".bi", function(){
+    //장바구니 추가
+    $("#div_books").on("click", ".cart", async function(){
         if(!sessionStorage.getItem("email")){
-            location.href = "/users/login";
-        }else{
-            //장바구니 등록
-            const book = JSON.parse($(this).attr("book"));
-            console.log(book);
+            alert("로그인 해주세요.");
+            location.href="/users/login";
+            return;
         }
-    });
+
+        const userId = sessionStorage.getItem("uid");
+        const book = JSON.parse($(this).attr("book"));
+
+        const ref_cart = ref(db, 'cart/' + userId + "/" + book.isbn);
+        //장바구니 체크
+        const result = await get(ref_cart);
+        if(result.val()){
+            alert("이미 장바구니에 있습니다.");
+        }else{
+            if(!confirm("장바구니에 추가 하시겠습니까?"));
+            set(ref_cart, book);
+            alert("장바구니에 추가되었습니다.");
+        }
+    })
 
     $(frm).on("submit", function(e){
         e.preventDefault(); //리로딩 안함
