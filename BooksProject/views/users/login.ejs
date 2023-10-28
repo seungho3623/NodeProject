@@ -50,7 +50,11 @@
                 sessionStorage.setItem("email", email);
                 sessionStorage.setItem("uid", success.user.uid);
                 alert("로그인 성공");
-                location.href="/";
+                if(!sessionStorage.getItem("target")){
+                    location.href = "/";
+                }else{
+                    location.href = sessionStorage.getItem("target");
+                }
             }).catch(error=>{
                 alert(error.message);
             });        
