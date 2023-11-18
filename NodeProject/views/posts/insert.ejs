@@ -1,11 +1,11 @@
 <div class="my-5">
     <h1 class="text-center mb-5">글쓰기</h1>
-    <form name="frm" class="card p-3">
+    <form name="frm">
         <input name="title" placeholder="제목을 입력하세요." class="form-control mb-3">
-        <textarea name="body" rows="10" placeholder="내용을 입력하세요." class="form-control mb-3"></textarea>
-        <div class="text-end">
-            <button class="btn btn-dark px-4">등록</button>
-            <button class="btn btn-secondary px-4" type="reseta">취소</button>
+        <textarea name="body" placeholder="내용을 입력하세요." rows="10" class="form-control"></textarea>
+        <div class="text-center my-3">
+            <button class="btn btn-dark px-5" type="submit">등록</button>
+            <button class="btn btn-secondary px-5" type="reset">취소</button>
         </div>
     </form>
 </div>
@@ -18,25 +18,25 @@
 
     $(frm).on("submit", async function(e){
         e.preventDefault();
-        const title=$(frm.title).val();
-        const body=$(frm.body).val();
-        if(title==""){
-            alert("제목을 입력하세요.");
+
+        const title = $(frm.title).val();
+        const body = $(frm.body).val();
+
+        if(title == "" || body == ""){
+            alert("제목과 내용을 입력하세요.");
             $(frm.title).focus();
-        }else if(body==""){
-            alert("내용을 입력하세요.");
-            $(frm.body).focus();
         }else{
-            if(confirm("게시글을 등록하시겠습니까?")){
-                const date=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+            if(!confirm("게시글을 등록하시겠습니까?")){
+                return;
+            }else{
+                //게시글 저장
                 const email = sessionStorage.getItem("email");
-                const data = {email, date, title, body};
-                //console.log(data);
-                await addDoc(collection(db, 'posts'), data);
-                alert("게시글이 등록되었습니다.");
+                const date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+                //console.log(date, email, title, body);
+                await addDoc(collection(db, 'posts'), {date, email, title, body});
+                alert("등록 완료");
                 location.href = "/posts";
             }
         }
     });
-
 </script>
