@@ -17,6 +17,7 @@
     </div>
 
     <div id="div_comments"></div>
+    <div id="pagination" class="pagination justify-content-center mt-5"></div>
 </div>
 
 <script id="temp_comments" type="x-handlebars-template">
@@ -26,10 +27,23 @@
                 <small><b>{{email}}</b></small>
                 <small>{{date}}</small>
             </div>
-            <div>{{body}}</div>
-            <div class="text-end" style="{{fn_button email}}">
-                <button class="btn btn-dark btn-sm">수정</button>
-                <button class="btn btn-secondary btn-sm">삭제</button>
+            
+            <div class="view{{id}}">
+                <div class="ellipsis2 body">{{body}}</div>
+                <div class="text-end mt-2" style="{{fn_button email}}">
+                    <button class="btn-update btn btn-dark btn-sm" id="{{id}}">수정</button>
+                    <button class="btn-delete btn btn-dark btn-sm" id="{{id}}">삭제</button>
+                </div>
+            </div>
+
+            <div class="edit{{id}}" style="display:none;">
+                <div>
+                    <textarea class="body form-control" rows="3">{{body}}</textarea>
+                </div>
+                <div class="text-end mt-2">
+                    <button class="btn-save btn btn-dark btn-sm" id="{{id}}">저장</button>
+                    <button class="btn-cancle btn btn-dark btn-sm" id="{{id}}">취소</button>
+                </div>
             </div>
         </div>
         <hr>
@@ -46,15 +60,63 @@
 
 <script type="module">
     import { app } from "/javascripts/firebaseInit.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
-    import { query, orderBy, getDocs, where} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    import { query, orderBy, getDocs, where, setDoc} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
     
     const db = getFirestore(app);
     const pid = "<%=id%>";
 
+    let total = 0;
+    const size = 3;
+    let page = 1;
+
     if(sessionStorage.getItem("email")){
         $("#div_insert, #div_login").toggle();
     }
+
+    $("#div_comments").on("click", ".body", function(){
+        $(this).toggleClass("ellipsis2");
+    });
+
+    $("#div_comments").on("click", ".btn-secondary", async function(){
+        const id = $(this).attr("id");
+        if(!confirm("댓글을 삭제하시겠습니까?")){
+            return;
+        }else{
+            await deleteDoc(doc(db, `/comments/${id}`));
+            alert("삭제되었습니다.");
+            getComments();
+        }
+    })
+
+    $("#div_comments").on("click", ".btn-save", async function(){
+        const id = $(this).attr("id");
+        const edit = $(this).parent().parent();
+        const body = edit.find(".body").val();
+
+        if(!confirm("수정하시겠습니까?")){
+            return;
+        }else{
+            const snapshot = await getDoc(doc(db, `comments/${id}`));
+            await setDoc(doc(db,`comments/${id}`), {...snapshot.data(), body});
+            alert("수정 완료");
+            getComments();
+        }
+    })
+
+    $("#div_comments").on("click", ".btn-update", function(){
+        const id = $(this).attr("id");
+
+        $("#div_comments .view" + id).hide();
+        $("#div_comments .edit" + id).show();
+    })
+
+    $("#div_comments").on("click", ".btn-cancle", function(){
+        const id = $(this).attr("id");
+        
+        $("#div_comments .view" + id).show();
+        $("#div_comments .edit" + id).hide();
+    })
 
     $("#btn-login").on("click", function(){
         sessionStorage.setItem("target", `/posts/read?id=${pid}`);
@@ -85,16 +147,43 @@
         const snapshot = await getDocs(q);
         const total = snapshot.docs.length;
         
+        if(total != snapshot.docs.length){
+            total = snapshot.docs.length;
+            const totalPages = Math.ceil(total / size);
+            $("#pagination").twbsPagination("changeTotalPages", totalPages, 1);
+        }
+
         let rows = [];
         
         $("#total").html(total);
 
-        snapshot.docs.forEach(doc => {
-            const data = {id : doc.id, ...doc.data()};
-            rows.push(data);
+        snapshot.docs.forEach((doc, index) => {
+            const start = (page - 1) * size;
+            const end = (page * size) - 1; 
+
+            if(index >= start && index <= end){
+                const data = {id : doc.id, ...doc.data()};
+                rows.push(data);
+            }
         });
 
         const temp = Handlebars.compile($("#temp_comments").html());
         $("#div_comments").html(temp(rows));
     }
+
+    $('#pagination').twbsPagination({
+        totalPages:10, //총 페이지 번호 수
+        visiblePages: 5, // 하단에서 한 번에 보여 지는 페이지 번호 수
+        startPage : 1, // 시작 시 표시되는 현재 페이지
+        initiateStartPageClick: false, // 플러그인이 시작 시 페이지 버튼 클릭 여부 (default : true) 
+        first : '<<', // 페이지네이션 버튼 중 처음으로 돌아가는 버튼에 쓰여 있는 텍스트
+        prev : '<', // 이전 페이지 버튼에 쓰여 있는 텍스트
+        next : '>', // 다음 페이지 버튼에 쓰여 있는 텍스트
+        last : '>>', // 페이지네이션 버튼 중 마지막으로 가는 버튼에 쓰여 있는 텍스트
+        onPageClick: function (event, clickPage) {
+            page=clickPage;
+            getComments(); 
+        }
+    });
+    
 </script>
