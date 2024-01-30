@@ -66,7 +66,16 @@ const projectsData = [
     image: "/images/projects/inhaboard.png",
     tag: ["All", "Web"],
     hashtag: "Web",
-    gitUrl: "https://github.com/seungho3623/BoardProject/tree/main",
+    gitUrl: "https://github.com/seungho3623/NodeProject/tree/main/InhaBoard",
+  },
+  {
+    id: 8,
+    title: "SwiftProject",
+    description: "IOS APP 공부 용 저장소",
+    image: "/images/projects/swift.png",
+    tag: ["All", "Mobile"],
+    hashtag: "Mobile",
+    gitUrl: "https://github.com/seungho3623/SwiftProject",
   },
 ];
 
