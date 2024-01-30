@@ -87,7 +87,7 @@ const AboutMe = () => {
                             지금까지에 재직 경험과 대학교에서 배운 지식을 발판 삼아 더 능력 있는 개발자로 성장할 기회를 찾고자 합니다.
                         </p>
                     </div>
-                    <div className="md:w-1/2 flex flex-col items-center mt-4">
+                    <div className="md:w-1/2 flex flex-col items-center mt-1">
                         <div className="flex flex-row justify-start">
                             <TabButton
                                 selectTab={() => handleTabChange("profile")}
