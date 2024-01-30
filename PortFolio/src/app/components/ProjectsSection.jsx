@@ -12,7 +12,7 @@ const projectsData = [
     image: "/images/projects/portfolio.png",
     tag: ["All", "Web"],
     hashtag: "Web",
-    gitUrl: "https://github.com/seungho3623/OOTD?tab=readme-ov-file",
+    gitUrl: "https://github.com/seungho3623/NodeProject/tree/main/PortFolio",
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ const projectsData = [
     image: "/images/projects/ootd.png",
     tag: ["All", "Web"],
     hashtag: "Web",
-    gitUrl: "https://github.com/seungho3623/OOTD?tab=readme-ov-file",
+    gitUrl: "https://github.com/seungho3623/OOTD",
   },
   {
     id: 3,
