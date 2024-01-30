@@ -32,6 +32,42 @@ const projectsData = [
     hashtag: "Moblie",
     gitUrl: "https://github.com/seungho3623/InhaMarble",
   },
+  {
+    id: 4,
+    title: "게시판",
+    description: "Spring Boot를 사용한 게시판 프로젝트",
+    image: "/images/projects/board.png",
+    tag: ["All", "Web"],
+    hashtag: "Web",
+    gitUrl: "https://github.com/seungho3623/BoardProject/tree/main",
+  },
+  {
+    id: 5,
+    title: "도어락",
+    description: "방범 도어락 프로젝트",
+    image: "/images/projects/doorlock.png",
+    tag: ["All", "Embedded"],
+    hashtag: "Embedded",
+    gitUrl: "https://github.com/seungho3623/Doorlock",
+  },
+  {
+    id: 6,
+    title: "몰컴",
+    description: "몰컴 기능이 있는 탁상용 시계",
+    image: "/images/projects/clock.png",
+    tag: ["All", "Embedded"],
+    hashtag: "Embedded",
+    gitUrl: "https://github.com/seungho3623/HiddenComputer",
+  },
+  {
+    id: 7,
+    title: "게시판",
+    description: "Node.js를 사용한 게시판 프로젝트",
+    image: "/images/projects/inhaboard.png",
+    tag: ["All", "Web"],
+    hashtag: "Web",
+    gitUrl: "https://github.com/seungho3623/BoardProject/tree/main",
+  },
 ];
 
 const ProjectsSection = () => {
