@@ -75,7 +75,7 @@ const AboutMe = () => {
             </div>
             <div className="md:flex items-center py-8 px-4 xl:gap- sm:py-8 xl:px-16">
                 <div className="mt-4 md:mt-0 text-left flex flex-col md:flex-row h-full w-full">
-                    <div className="md:w-1/2">
+                    <div className="mt-4 md:w-1/2">
                         <p className="text-base lg:text-lg">
                             다양한 마이크로 컨트롤러를 활용한 통신 인터페이스, 제어 시스템 구현 경험 및
                             DataSheet 분석을 통한 새로운 IC 인터페이스 개발 경험과 PM 업무를 통해
